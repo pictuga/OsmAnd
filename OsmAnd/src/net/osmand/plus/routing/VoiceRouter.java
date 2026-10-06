@@ -425,6 +425,11 @@ public class VoiceRouter {
 		if (nextInfo == null || nextInfo.directionInfo == null) {
 			return;
 		}
+
+		if (nextInfo.imminent >= 0) {
+				app.getLockHelper().onUserInteraction();
+		}
+
 		int dist = nextInfo.distanceTo;
 		RouteDirectionInfo next = nextInfo.directionInfo;
 

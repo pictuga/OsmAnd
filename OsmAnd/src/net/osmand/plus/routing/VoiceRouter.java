@@ -430,8 +430,8 @@ public class VoiceRouter {
 
 		if (atd.isTurnStateActive(speed, dist, STATE_TURN_IN)
 				|| (next.routeEndPointOffset > next.routePointOffset
-				&& next.routePointOffset <= router.getCurrentRoute()
-				&& router.getCurrentRoute() <= next.routeEndPointOffset)) {
+				&& next.routePointOffset <= router.getRoute().getCurrentRoute()
+				&& router.getRoute().getCurrentRoute() <= next.routeEndPointOffset)) {
 				app.getLockHelper().onUserInteraction();
 		}
 

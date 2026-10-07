@@ -425,13 +425,12 @@ public class VoiceRouter {
 		if (nextInfo == null || nextInfo.directionInfo == null) {
 			return;
 		}
-
-		if (nextInfo.imminent >= 0) {
-				app.getLockHelper().onUserInteraction();
-		}
-
 		int dist = nextInfo.distanceTo;
 		RouteDirectionInfo next = nextInfo.directionInfo;
+
+		if (atd.isTurnStateActive(speed, dist, STATE_TURN_NOW) || atd.isTurnStateActive(speed, dist, STATE_TURN_IN)) {
+				app.getLockHelper().onUserInteraction();
+		}
 
 		// If routing is changed update status to unknown
 		if (next != nextRouteDirection) {

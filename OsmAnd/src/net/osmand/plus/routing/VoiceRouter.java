@@ -428,7 +428,10 @@ public class VoiceRouter {
 		int dist = nextInfo.distanceTo;
 		RouteDirectionInfo next = nextInfo.directionInfo;
 
-		if (atd.isTurnStateActive(speed, dist, STATE_TURN_NOW) || atd.isTurnStateActive(speed, dist, STATE_TURN_IN) || (currentSegment != null && currentSegment.getObject().roundabout())) {
+		if (atd.isTurnStateActive(speed, dist, STATE_TURN_IN)
+				|| (next.routeEndPointOffset > next.routePointOffset
+				&& next.routePointOffset <= router.getCurrentRoute()
+				&& router.getCurrentRoute() <= next.routeEndPointOffset)) {
 				app.getLockHelper().onUserInteraction();
 		}
 

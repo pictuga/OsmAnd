@@ -431,7 +431,7 @@ public class VoiceRouter {
 		int dist = nextInfo.distanceTo;
 		RouteDirectionInfo next = nextInfo.directionInfo;
 
-		log.info("KEEPON. " + dist + " / " + STATE_TURN_IN);
+		log.info("KEEPON. " + dist + " / " + atd.isTurnStateActive(speed, dist, STATE_TURN_IN));
 
 		if (atd.isTurnStateActive(speed, dist, STATE_TURN_IN)
  				|| (next.routeEndPointOffset > next.routePointOffset

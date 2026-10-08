@@ -34,7 +34,9 @@ import net.osmand.plus.views.mapwidgets.configure.buttons.QuickActionButtonState
 
 import org.apache.commons.logging.Log;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class LockHelper implements SensorEventListener, StateChangedListener<ApplicationMode> {
 
@@ -58,7 +60,8 @@ public class LockHelper implements SensorEventListener, StateChangedListener<App
 	private CommonPreference<Boolean> turnScreenOnNavigationInstructions;
 
 	private ApplicationMode lastApplicationMode;
-	private long lastInteractionTime;
+	private final Set<String> keepScreenOnReasons = new HashSet<>();
+	private long keepScreenOnIdleSince;
 	@Nullable
 	private LockUIAdapter lockUIAdapter;
 	private final Runnable lockRunnable;
@@ -182,22 +185,31 @@ public class LockHelper implements SensorEventListener, StateChangedListener<App
 		}
 		int timeout = getKeepScreenOnTimeout();
 		if (keepScreenOn && timeout > 0) {
-			lastInteractionTime = SystemClock.uptimeMillis();
+			keepScreenOnIdleSince = SystemClock.uptimeMillis();
 			sendPostDelayedKeepScreenOnMessage(timeout * 1000L);
 		}
 	}
 
-	public void onUserInteraction() {
-		lastInteractionTime = SystemClock.uptimeMillis();
-		resetLockTimerIfNeeded();
-		if (getKeepScreenOnTimeout() > 0 && !uiHandler.hasMessages(KEEP_SCREEN_ON_MESSAGE)) {
+	public void addKeepScreenOnReason(@NonNull String reason) {
+		if (keepScreenOnReasons.add(reason)) {
 			setKeepScreenOn(true);
+		}
+		resetLockTimerIfNeeded();
+	}
+
+	public void removeKeepScreenOnReason(@NonNull String reason) {
+		if (keepScreenOnReasons.remove(reason) && keepScreenOnReasons.isEmpty()) {
+			keepScreenOnIdleSince = SystemClock.uptimeMillis();
+			releaseKeepScreenOn();
 		}
 	}
 
 	private void releaseKeepScreenOn() {
+		if (!keepScreenOnReasons.isEmpty()) {
+			return;
+		}
 		long timeout = getKeepScreenOnTimeout() * 1000L;
-		long idleTime = SystemClock.uptimeMillis() - lastInteractionTime;
+		long idleTime = SystemClock.uptimeMillis() - keepScreenOnIdleSince;
 		if (timeout > idleTime) {
 			sendPostDelayedKeepScreenOnMessage(timeout - idleTime);
 		} else if (lockUIAdapter != null) {

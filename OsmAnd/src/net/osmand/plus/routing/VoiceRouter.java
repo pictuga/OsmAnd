@@ -423,10 +423,20 @@ public class VoiceRouter {
 		NextDirectionInfo nextInfo = router.getNextRouteDirectionInfo(new NextDirectionInfo(), true);
 		RouteSegmentResult currentSegment = router.getCurrentSegmentResult();
 		if (nextInfo == null || nextInfo.directionInfo == null) {
+			app.getLockHelper().removeKeepScreenOnReason("navigation");
 			return;
 		}
 		int dist = nextInfo.distanceTo;
 		RouteDirectionInfo next = nextInfo.directionInfo;
+
+		if (atd.isTurnStateActive(speed, dist, STATE_TURN_IN)
+ 				|| (next.routeEndPointOffset > next.routePointOffset
+ 				&& next.routePointOffset <= router.getRoute().getCurrentRoute()
+ 				&& router.getRoute().getCurrentRoute() <= next.routeEndPointOffset)) {
+			app.getLockHelper().addKeepScreenOnReason("navigation");
+		} else {
+			app.getLockHelper().removeKeepScreenOnReason("navigation");
+ 		}
 
 		// If routing is changed update status to unknown
 		if (next != nextRouteDirection) {

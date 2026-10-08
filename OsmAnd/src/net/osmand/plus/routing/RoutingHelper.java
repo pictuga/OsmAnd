@@ -213,6 +213,7 @@ public class RoutingHelper {
 		isFollowingMode = follow;
 		isPauseNavigation = false;
 		if (!follow) {
+			app.getLockHelper().removeKeepScreenOnReason("navigation");
 			if (app.getNavigationService() != null) {
 				app.getNavigationService().stopIfNeeded(app, NavigationService.USED_BY_NAVIGATION);
 			} else {

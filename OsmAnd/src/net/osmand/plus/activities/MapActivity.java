@@ -1575,8 +1575,11 @@ public class MapActivity extends OsmandActionBarActivity implements DownloadEven
 			return lockHelper.getLockGestureDetector(this).onTouchEvent(event);
 		}
 
-		if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
-			lockHelper.onUserInteraction();
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			lockHelper.addKeepScreenOnReason("user_interaction");
+		} else if (event.getAction() == MotionEvent.ACTION_UP
+				|| event.getAction() == MotionEvent.ACTION_CANCEL) {
+			lockHelper.removeKeepScreenOnReason("user_interaction");
 		}
 
 		if (settings.DO_NOT_USE_ANIMATIONS.get()) {

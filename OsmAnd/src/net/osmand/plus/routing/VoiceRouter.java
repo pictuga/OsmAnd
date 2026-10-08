@@ -15,6 +15,7 @@ import android.media.SoundPool;
 import androidx.annotation.NonNull;
 
 import net.osmand.Location;
+import net.osmand.PlatformUtil;
 import net.osmand.StateChangedListener;
 import net.osmand.binary.RouteDataObject;
 import net.osmand.data.PointDescription;
@@ -43,6 +44,7 @@ import java.util.Map;
 
 
 public class VoiceRouter {
+	private static final org.apache.commons.logging.Log log = PlatformUtil.getLog(VoiceRouter.class);
 
 	private static final int STATUS_UTWP_TOLD = -1;
 	private static final int STATUS_UNKNOWN = 0;
@@ -428,6 +430,8 @@ public class VoiceRouter {
 		int dist = nextInfo.distanceTo;
 		RouteDirectionInfo next = nextInfo.directionInfo;
 
+		log.info("KEEPON. "+dist);
+		
 		if (atd.isTurnStateActive(speed, dist, STATE_TURN_IN)
 				|| (next.routeEndPointOffset > next.routePointOffset
 				&& next.routePointOffset <= router.getRoute().getCurrentRoute()

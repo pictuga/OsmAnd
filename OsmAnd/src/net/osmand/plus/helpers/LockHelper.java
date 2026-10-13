@@ -132,8 +132,10 @@ public class LockHelper implements SensorEventListener, StateChangedListener<App
 	 * When displaying over keyguard, lock is (near) instant.
 	 */
 	public void doLock() {
+		// run in any case
 		doKeepOn(false);
 
+		// the rest is only run when displaying over keyguard
 		if (wakeLock != null) {
 			if (wakeLock.isHeld()) {
 				wakeLock.release();
@@ -184,9 +186,10 @@ public class LockHelper implements SensorEventListener, StateChangedListener<App
 	 * When displaying over the keyguard:
 	 * 		Wait for the relevant timeout.
 	 * When the phone is unlocked:
-	 * 		If using system timeout, call doUnlock() right away.
+	 * 		If using system timeout, call doLock() right away.
 	 * 		If using in-app timeout, if in-app timeout > system timeout, wait for
-	 * 		(in-app timeout) - (system timeout). Otherwise do nothing.
+	 * 		(in-app timeout) - (system timeout). Otherwise call doLock() right away.
+	 * This function only (directly) calls doLock() when the phone is unlocked.
 	 */
 	public void restartLockTimeout() {
 		uiHandler.removeMessages(LOCK_TIMEOUT_MESSAGE);
@@ -222,33 +225,10 @@ public class LockHelper implements SensorEventListener, StateChangedListener<App
 
 	private void startLockTimeout(long delayMillis) {
 		if(delayMillis > 0) {
-			Message message = Message.obtain(uiHandler, this::onLockTimeout);
+			Message message = Message.obtain(uiHandler, this::doLock);
 			message.what = LOCK_TIMEOUT_MESSAGE;
 			uiHandler.sendMessageDelayed(message, delayMillis * 1000L);
 		}
-	}
-
-	private void onLockTimeout() {
-		if (!keepScreenAwakeReasons.isEmpty()) {
-			return;
-		}
-		doLock();
-	}
-
-	private int getLockTimeout() {
-		int timeout = turnScreenOnTime.get();
-
-		if (useSystemScreenTimeout.get()) {
-			try {
-				int screenOffTimeout = Settings.System.getInt(app.getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, 0);
-				if (screenOffTimeout > 0) {
-					timeout = screenOffTimeout / 1000;
-				}
-			} catch (Exception e) {
-				LOG.error(e.getMessage(), e);
-			}
-		}
-		return timeout;
 	}
 
 	@Override

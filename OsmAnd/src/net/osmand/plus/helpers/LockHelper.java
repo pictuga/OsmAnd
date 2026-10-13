@@ -2,7 +2,6 @@ package net.osmand.plus.helpers;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.KeyguardManager;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -203,7 +202,6 @@ public class LockHelper implements SensorEventListener, StateChangedListener<App
 
 		try {
 			systemTimeout = Settings.System.getInt(app.getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, 0) / 1000;
-			}
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 		}

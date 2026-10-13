@@ -433,7 +433,6 @@ public class VoiceRouter {
 				|| (next.routeEndPointOffset > next.routePointOffset
 					&& next.routePointOffset <= router.getRoute().getCurrentRoute()
 					&& router.getRoute().getCurrentRoute() <= next.routeEndPointOffset))) {
-			app.getLockHelper().doUnlock();
 			app.getLockHelper().addKeepScreenAwakeReason("navigation");
 		} else {
 			app.getLockHelper().removeKeepScreenAwakeReason("navigation");

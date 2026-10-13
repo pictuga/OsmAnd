@@ -125,7 +125,7 @@ public class LockHelper implements SensorEventListener, StateChangedListener<App
 			lockUIAdapter.setKeyguardFlags(true);
 		}
 		PowerManager pm = (PowerManager) app.getSystemService(Context.POWER_SERVICE);
-		if (pm != null && walelock == null) {
+		if (pm != null && wakeLock == null) {
 			wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
 					| PowerManager.ACQUIRE_CAUSES_WAKEUP, "OsmAnd:OnVoiceWakeupTag");
 			wakeLock.acquire();

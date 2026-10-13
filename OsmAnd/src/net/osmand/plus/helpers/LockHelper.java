@@ -2,6 +2,7 @@ package net.osmand.plus.helpers;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -208,7 +209,9 @@ public class LockHelper implements SensorEventListener, StateChangedListener<App
 
 		int timeout = useSystemScreenTimeout.get() ? systemTimeout : inAppTimeout;
 
-		if (app.getSystemService(Context.KEYGUARD_SERVICE).isKeyguardLocked()) {
+		KeyguardManager km = (KeyguardManager) app.getSystemService(Context.KEYGUARD_SERVICE);
+
+		if (km != null && km.isKeyguardLocked()) {
 			startLockTimeout(timeout);
 		} else if (useSystemScreenTimeout.get()) {
 			doLock();

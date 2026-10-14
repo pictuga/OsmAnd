@@ -192,6 +192,7 @@ public class LockHelper implements SensorEventListener, StateChangedListener<App
 	 * This function only (directly) calls doLock() when the phone is unlocked.
 	 */
 	public void restartLockTimeout() {
+		LOG.info("KEEPON restartLockTimeout 00");
 		uiHandler.removeMessages(LOCK_TIMEOUT_MESSAGE);
 
 		if (!keepScreenAwakeReasons.isEmpty()) {
@@ -211,16 +212,23 @@ public class LockHelper implements SensorEventListener, StateChangedListener<App
 		int timeout = useSystemScreenTimeout.get() ? systemTimeout : inAppTimeout;
 		KeyguardManager km = (KeyguardManager) app.getSystemService(Context.KEYGUARD_SERVICE);
 
+		LOG.info("KEEPON restartLockTimeout info " + wakeLock + " / " + km.isKeyguardLocked());
+
 		if (timeout == 0) {
+			LOG.info("KEEPON restartLockTimeout 10");
 			doKeepOn(true);
 		} else if (wakeLock != null && km.isKeyguardLocked()) { // displaying over keyguard
+			LOG.info("KEEPON restartLockTimeout 20");
 			startLockTimeout(timeout);
 		} else if (useSystemScreenTimeout.get()) {
+			LOG.info("KEEPON restartLockTimeout 30");
 			doLock();
 		} else {
 			if (systemTimeout != -1 && inAppTimeout > systemTimeout) {
+				LOG.info("KEEPON restartLockTimeout 40");
 				startLockTimeout(inAppTimeout - systemTimeout);
 			} else {
+				LOG.info("KEEPON restartLockTimeout 50");
 				doLock();
 			}
 		}
